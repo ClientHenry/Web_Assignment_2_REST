@@ -60,6 +60,7 @@ class UserSerilizer(serializers.ModelSerializer):
 
 	def create(self, validated_data):
 		user = User.objects.create_user(**validated_data)
+
 		#user.groups = "Lecturers"
 #添加一个student group
 		user.groups.add(2)
