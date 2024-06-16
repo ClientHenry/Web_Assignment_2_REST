@@ -1,4 +1,8 @@
+from django.contrib.auth import logout
 from rest_framework import viewsets
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.response import Response
+
 from .models import Class, Course, Lecturer, Student, StudentEnrollment, Semester
 from . import serializers
 from rest_framework.authentication import TokenAuthentication
@@ -8,8 +12,8 @@ from django.contrib.auth.models import User
 class SemesterViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.SemesterSerializer
 	queryset = Semester.objects.all()
-	permission_classes = [IsAuthenticated]
-	authentication_classes = (TokenAuthentication, )
+	#permission_classes = [IsAuthenticated]
+	#authentication_classes = (TokenAuthentication, )
 
 class ClassViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.ClassSerializer
@@ -34,3 +38,10 @@ class StudentEnrollmentViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.UserSerilizer
 	queryset = User.objects.all()
+	@api_view(['GET'])
+	@permission_classes([IsAuthenticated])
+	@authentication_classes([TokenAuthentication])
+	def User_logout(request):
+		request.user.auth_token.delete()
+		logout(request)
+		return Response("Logout successful")
