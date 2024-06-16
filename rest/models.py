@@ -42,7 +42,7 @@ class Student(models.Model):
 	lastname = models.CharField(max_length=50)
 	email = models.EmailField(unique=True)
 	DOB = models.DateField()
-	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='student')
 
 	def __str__(self):
 		return f"{self.firstname} {self.lastname}"
