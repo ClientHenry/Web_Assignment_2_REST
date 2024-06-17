@@ -10,10 +10,8 @@ class SemesterSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
-class ClassSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Class
-		fields = '__all__'
+
+
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -25,19 +23,41 @@ class CourseSerializer(serializers.ModelSerializer):
 class LecturerSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Lecturer
-		fields = '__all__'
+		fields = ['id', 'staffID', 'firstname', 'lastname', 'email', 'DOB']
+
+		extra_kwargs = {
+			'user': {'write_only': True, 'required': False}
+		}
+
+	def create(self, validated_data):
+		email = validated_data.get('email')
+		dob = validated_data.get('DOB')
+
+		user, _ = User.objects.get_or_create(username=email)
+		user.set_password(str(dob))
+		user.save()
+
+		lecturer_group = Group.objects.get(name='Lecturer')
+		user.groups.add(lecturer_group)
+
+		Token.objects.create(user=user)
+
+		validated_data['user'] = user
+		lecturer = super().create(validated_data)
+
+		return lecturer
 
 
-def delete(instance):
-
-	user = instance.user
-	try:
-		token = Token.objects.get(user=user)
-		token.delete()
-	except Token.DoesNotExist:
-		pass
-	user.delete()
-	instance.delete()
+# def delete(instance):
+#
+# 	user = instance.user
+# 	try:
+# 		token = Token.objects.get(user=user)
+# 		token.delete()
+# 	except Token.DoesNotExist:
+# 		pass
+# 	user.delete()
+# 	instance.delete()
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -67,7 +87,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 		return student
 
-	# 删除user可以删除student，但是反过来不行。上个作业就不行~
+# 删除user可以删除student，但是反过来不行。上个作业就不行~
 
 
 class StudentEnrollmentSerializer(serializers.ModelSerializer):
@@ -102,3 +122,11 @@ class UserSerilizer(serializers.ModelSerializer):
 		user.groups.add(2)
 		Token.objects.create(user=user)
 		return user
+
+
+class ClassSerializer(serializers.ModelSerializer):
+
+
+	class Meta:
+		model = Class
+		fields = '__all__'
