@@ -127,6 +127,8 @@ class UserSerilizer(serializers.ModelSerializer):
 class ClassSerializer(serializers.ModelSerializer):
 
 
+
+
 	class Meta:
 		model = Class
 		fields = '__all__'
