@@ -43,7 +43,6 @@ class Student(models.Model):
 	email = models.EmailField(unique=True)
 	DOB = models.DateField()
 	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='student')
-
 	def __str__(self):
 		return f"{self.firstname} {self.lastname}"
 
@@ -61,8 +60,7 @@ class Class(models.Model):
 
 class StudentEnrollment(models.Model):
 	studentID = models.ForeignKey(Student, on_delete=models.PROTECT, related_name='enrollments')
-	classID = models.ForeignKey(Class, on_delete=models.PROTECT, related_name='enrollme'
-																			  'nts')
+	classID = models.ForeignKey(Class, on_delete=models.PROTECT, related_name='enrollments')
 	grade = models.PositiveIntegerField(blank=True, null=True)
 	enrolTime = models.DateTimeField(auto_now=True)
 	gradeTime = models.DateTimeField(auto_now_add=True)

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,13 +35,10 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-
-	# "rest.apps.RestConfig",
 	'rest_framework',
 	'rest_framework.authtoken',
 	'corsheaders',
 	'rest',
-
 ]
 
 MIDDLEWARE = [
@@ -128,25 +125,17 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST_FRAMEWORK = {
-#   'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-
-#   'DEFAULT_PERMISSION_CLASSES': [
-
-#      'rest_framework.permissions.IsAuthenticated',
-#  'rest_framework.permissions.AllowAny',
-# ]
-# }
-
 REST_FRAMEWORK = {
 	'DEFAULT_PERMISSION_CLASSES': [
-		#'rest_framework.permissions.IsAuthenticated'
-		'rest_framework.permissions.AllowAny'
+		'rest_framework.permissions.IsAuthenticated'
+		# 'rest_framework.permissions.AllowAny'
 	],
 	'DEFAULT_AUTHENTICATION_CLASSES': [
 		'rest_framework.authentication.TokenAuthentication',
+
 	],
 }
+
 
 CORS_ALLOW_ALL_ORIGINS = True  # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
@@ -156,3 +145,11 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOWED_ORIGIN_REGEXES = [
 	'http://localhost:3000',
 ]
+
+SENDGRID_API_KEY = os.getenv('vVDZfFDySbyLXp8cFvpbPg')
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = "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"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

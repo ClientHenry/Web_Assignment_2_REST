@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
-from rest.serializers import LecturerClassListView
+from rest.views import send_email_to_class
 from rest.viewsets import UserViewSet
 
 urlpatterns = [
@@ -26,6 +26,5 @@ urlpatterns = [
     path('api/', include('rest.urls')),
     path('auth/', obtain_auth_token),
     path('auth/logout', UserViewSet.User_logout),
-    # path('student/grades/', StudentGradeView.as_view(), name='student-grades'),
-    path('lecturer/classes/', LecturerClassListView.as_view(), name='lecturer-classes'),
+    path('email/', send_email_to_class),
 ]
