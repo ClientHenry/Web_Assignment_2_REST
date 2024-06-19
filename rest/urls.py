@@ -1,15 +1,19 @@
 from django.urls import path, include
-from . import views
+from . import viewsets
 from rest_framework.routers import DefaultRouter
 
+from .views import StudentGradeViewSet, LecturerViewSet
+
 router = DefaultRouter()
-router.register('semesters', viewset=views.SemesterViewSet, basename='semesters')
-router.register('classes', viewset=views.ClassViewSet, basename='classes')
-router.register('courses', viewset=views.CourseViewSet, basename='courses')
-router.register('lecturers', viewset=views.LecturerViewSet, basename='lecturers')
-router.register('students', viewset=views.StudentViewSet, basename='students')
-router.register('enrollments', viewset=views.StudentEnrollmentViewSet, basename='enrollments')
-router.register('users', viewset=views.UserViewSet, basename='users')
+router.register('semesters', viewset=viewsets.SemesterViewSet, basename='semesters')
+router.register('classes', viewset=viewsets.ClassViewSet, basename='classes')
+router.register('courses', viewset=viewsets.CourseViewSet, basename='courses')
+router.register('lecturers', viewset=viewsets.LecturerViewSet, basename='lecturers')
+router.register('students', viewset=viewsets.StudentViewSet, basename='students')
+router.register('enrollments', viewset=viewsets.StudentEnrollmentViewSet, basename='enrollments')
+router.register('users', viewset=viewsets.UserViewSet, basename='users')
+router.register('grade/students', StudentGradeViewSet, basename='student-grades')
+router.register('grade/lecturers', LecturerViewSet, basename='lecturer-classes')
 
 urlpatterns = [
    path('', include(router.urls)),

@@ -1,4 +1,7 @@
-from rest_framework import serializers
+from rest_framework import serializers, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import Class, Course, Lecturer, Student, StudentEnrollment, Semester
 from django.contrib.auth.models import User, Group
 from rest_framework.authtoken.models import Token
@@ -8,10 +11,6 @@ class SemesterSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Semester
 		fields = '__all__'
-
-
-
-
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -87,13 +86,47 @@ class StudentSerializer(serializers.ModelSerializer):
 
 		return student
 
+
 # 删除user可以删除student，但是反过来不行。上个作业就不行~
 
-
-class StudentEnrollmentSerializer(serializers.ModelSerializer):
+class ClassSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = StudentEnrollment
+		model = Class
 		fields = '__all__'
+
+
+class LecturerClassListView(APIView):
+	# permission_classes = [permissions.IsAuthenticated]
+
+	def get(self, request):
+		# Check if the user is in the 'lecturer' group
+		if request.user.groups.filter(name='x').exists():
+			try:
+				lecturer = Lecturer.objects.get(email=request.user.username)
+			except Lecturer.DoesNotExist:
+				return Response({'error': 'Lecturer not found'}, status=404)
+
+			classes = lecturer.classes.all()
+			serializer = ClassSerializer(classes, many=True, context={'request': request})
+
+			# Customize the serialized data
+			data = serializer.data
+			for class_data in data:
+				class_obj = Class.objects.get(id=class_data['id'])
+				class_data['semester_details'] = {
+					'id': class_obj.semester.id,
+					'year': class_obj.semester.year,
+					'semester': class_obj.semester.semester,
+				}
+				class_data['course_details'] = {
+					'id': class_obj.course.id,
+					'code': class_obj.course.code,
+					'name': class_obj.course.name,
+				}
+
+			return Response(data)
+		else:
+			return Response({'error': 'You are not a lecturer'}, status=403)
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -124,11 +157,34 @@ class UserSerilizer(serializers.ModelSerializer):
 		return user
 
 
-class ClassSerializer(serializers.ModelSerializer):
+# class BulkStudentEnrollmentSerializer(serializers.ListSerializer):
+# 	def update(self, instance, validated_data):
+# 		# Create a mapping of id to enrollment instance
+# 		enrollment_mapping = {enrollment.id: enrollment for enrollment in instance}
+#
+# 		# Ensure that each item in validated_data has an 'id' field
+# 		if not all('id' in item for item in validated_data):
+# 			raise serializers.ValidationError("Each item in the list must have an 'id' field.")
+#
+# 		# Create a mapping of id to data item
+# 		data_mapping = {item['id']: item for item in validated_data}
+#
+# 		# Perform updates
+# 		ret = []
+# 		for enrollment_id, data in data_mapping.items():
+# 			enrollment = enrollment_mapping.get(enrollment_id, None)
+# 			if enrollment is not None:
+# 				# Update the enrollment instance with new data
+# 				for attr, value in data.items():
+# 					setattr(enrollment, attr, value)
+# 				enrollment.save()
+# 				ret.append(enrollment)
+# 		return ret
+#
 
-
-
-
+class StudentEnrollmentSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = Class
+		model = StudentEnrollment
+		# fields = ['id', 'classID', 'grade', 'classNumber', 'courseName']
 		fields = '__all__'
+		# list_serializer_class = BulkStudentEnrollmentSerializer
