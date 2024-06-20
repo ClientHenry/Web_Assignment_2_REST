@@ -109,4 +109,4 @@ class StudentEnrollmentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = StudentEnrollment
 		fields = '__all__'
-		read_only_fields = ('courseName', 'classNumber')
+		read_only_fields = ('courseName', 'classNumber', 'studentFirstName', 'studentLastName')
