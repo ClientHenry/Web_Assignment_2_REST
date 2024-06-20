@@ -74,17 +74,19 @@ TEMPLATES = [
 	},
 ]
 
-WSGI_APPLICATION = 'assignment2REST.wsgi.application'
+# WSGI_APPLICATION = 'assignment2REST.wsgi.application'
+# step 2
+WSGI_APPLICATION = 'assignment2REST.wsgi.app'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': BASE_DIR / 'db.sqlite3',
-	}
-}
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.sqlite3',
+# 		'NAME': BASE_DIR / 'db.sqlite3',
+# 	}
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -153,3 +155,18 @@ EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
 EMAIL_HOST_PASSWORD = "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"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+# step 3
+DATABASES={
+    'default':{
+        'ENGINE':'django.db.backends.postgresql',
+        'NAME':'verceldb',
+        'USER':'default',
+        'PASSWORD':'4UM3VGOjmsJK',
+        'HOST':'ep-hidden-king-a4x39qqh.us-east-1.aws.neon.tech',
+        'PORT':'5432',
+    }
+}
+
+# step 4 复制vercel文件
+
