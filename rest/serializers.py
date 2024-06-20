@@ -75,11 +75,23 @@ class StudentSerializer(serializers.ModelSerializer):
 class ClassSerializer(serializers.ModelSerializer):
 	courseName = serializers.ReadOnlyField(source='course.name')
 	classNumber = serializers.ReadOnlyField(source='number')
+	students = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(), many=True)
 
 	class Meta:
 		model = Class
 		fields = '__all__'
 		read_only_fields = ('courseName', 'classNumber')
+
+	def update(self, instance, validated_data):
+		students = validated_data.pop('students', None)
+		instance = super().update(instance, validated_data)
+
+		if students is not None:
+			instance.students.set(students)
+		else:
+			instance.students.clear()  # Clear students if students is empty
+
+		return instance
 
 
 class GroupSerializer(serializers.ModelSerializer):
