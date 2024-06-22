@@ -42,7 +42,7 @@ def bulk_create_students(request):
     for student_data in students_data:
         try:
             email = student_data.get('email')
-            dob = student_data.get('DOB').replace('-', '')
+            dob = student_data.get('DOB')
             first_name = student_data.get('firstName')
             last_name = student_data.get('lastName')
             studentID = student_data.get('studentID')
