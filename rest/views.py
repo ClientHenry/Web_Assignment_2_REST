@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -33,41 +34,83 @@ def send_email_to_class(request, pk):
     return Response(response_data, status=200)
 
 
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated, IsAdmin])
+# def bulk_create_students(request):
+#     students_data = request.data.get('students', [])
+#     created_students = []
+#
+#     for student_data in students_data:
+#         try:
+#             email = student_data.get('email')
+#             dob = student_data.get('DOB')
+#             first_name = student_data.get('firstName')
+#             last_name = student_data.get('lastName')
+#
+#             user = User.objects.create_user(
+#                 username=email,
+#                 password=dob,
+#                 email=email,
+#                 first_name=first_name,
+#                 last_name=last_name
+#             )
+#
+#             student_group, _ = Group.objects.get_or_create(name='Student')
+#             user.groups.add(student_group)
+#
+#             student = Student.objects.create(
+#                 user=user,
+#                 firstName=first_name,
+#                 lastName=last_name,
+#                 email=email,
+#                 DOB=dob
+#             )
+#
+#             created_students.append(student)
+#         except Exception:
+#             continue
+#
+#     serializer = StudentSerializer(created_students, many=True)
+#     return Response(serializer.data)
+
 @api_view(['POST'])
-@permission_classes([IsAuthenticated, IsAdmin])
 def bulk_create_students(request):
     students_data = request.data.get('students', [])
     created_students = []
 
     for student_data in students_data:
         try:
+            studentID = student_data.get('studentID')
             email = student_data.get('email')
             dob = student_data.get('DOB')
             first_name = student_data.get('firstName')
             last_name = student_data.get('lastName')
 
-            user = User.objects.create_user(
-                username=email,
-                password=dob,
-                email=email,
-                first_name=first_name,
-                last_name=last_name
-            )
+            user, _ = User.objects.get_or_create(username=email)
+            user.set_password(str(dob))
+            user.save()
 
             student_group, _ = Group.objects.get_or_create(name='Student')
             user.groups.add(student_group)
 
-            student = Student.objects.create(
+            Token.objects.get_or_create(user=user)
+
+            # Create Student instance directly
+            student_instance = Student.objects.create(
                 user=user,
                 firstName=first_name,
                 lastName=last_name,
                 email=email,
-                DOB=dob
+                DOB=dob,
+                studentID=studentID
             )
 
-            created_students.append(student)
-        except Exception:
+            created_students.append(student_instance)
+
+        except Exception as e:
+            # Handle exceptions (logging, etc.) if needed
             continue
 
+    # Serialize all created students
     serializer = StudentSerializer(created_students, many=True)
     return Response(serializer.data)
