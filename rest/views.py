@@ -69,7 +69,6 @@ def send_email_to_class(request, pk):
     # Prepare the response data including emails
     response_data = {
         'success': 'Email sent successfully',
-        'enrollments': serializer.data,
         'emails_sent_to': [enrollment.studentID.email for enrollment in enrollments if enrollment.studentID.email]
     }
 
