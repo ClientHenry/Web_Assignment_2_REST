@@ -27,23 +27,50 @@ from rest.serializers import StudentEnrollmentSerializer
 #
 # 	return Response({'success': 'Email sent successfully'}, status=200)
 
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated, IsLecturer])
+# def send_email_to_class(request, pk):
+# 	selected_class = get_object_or_404(Class, id=pk)
+# 	enrollments = selected_class.enrollments.all()
+#
+# 	for enrollment in enrollments:
+# 		# student_name = enrollment.studentID
+# 		subject = 'Your Grade is Ready'
+# 		body = 'Your Grade is Ready'
+# 		from_email = 'wanghao0628@hotmail.com'
+# 		to_email = enrollment.studentID.email
+# 		# to_email = 'wangh159@myunitec.ac.nz'
+# 		send_mail(subject, body, from_email, [to_email])
+# 		print(f"Sent email to: {to_email}")
+#
+# 	# Optionally, you can serialize the enrollments for response
+# 	serializer = StudentEnrollmentSerializer(enrollments, many=True)
+#
+# 	return Response({'success': 'Email sent successfully'}, status=200)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, IsLecturer])
 def send_email_to_class(request, pk):
-	selected_class = get_object_or_404(Class, id=pk)
-	enrollments = selected_class.enrollments.all()
+    selected_class = get_object_or_404(Class, id=pk)
+    enrollments = selected_class.enrollments.all()
 
-	for enrollment in enrollments:
-		# student_name = enrollment.studentID
-		subject = 'Your Grade is Ready'
-		body = 'Your Grade is Ready'
-		from_email = 'wanghao0628@hotmail.com'
-		to_email = enrollment.studentID.email
-		# to_email = 'wangh159@myunitec.ac.nz'
-		send_mail(subject, body, from_email, [to_email])
-		print(f"Sent email to: {to_email}")
+    for enrollment in enrollments:
+        if enrollment.studentID.email:  # Ensure student has a valid email
+            subject = 'Your Grade is Ready'
+            body = f'Hello {enrollment.studentID.firstname}, Your Grade is Ready'
+            from_email = 'wanghao0628@hotmail.com'
+            to_email = enrollment.studentID.email
+            send_mail(subject, body, from_email, [to_email])
+            # Optionally, you can log or collect email info here if needed
 
-	# Optionally, you can serialize the enrollments for response
-	serializer = StudentEnrollmentSerializer(enrollments, many=True)
+    # Serialize the enrollments for response
+    serializer = StudentEnrollmentSerializer(enrollments, many=True)
 
-	return Response({'success': 'Email sent successfully'}, status=200)
+    # Prepare the response data including emails
+    response_data = {
+        'success': 'Email sent successfully',
+        'enrollments': serializer.data,
+        'emails_sent_to': [enrollment.studentID.email for enrollment in enrollments if enrollment.studentID.email]
+    }
+
+    return Response(response_data, status=200)
