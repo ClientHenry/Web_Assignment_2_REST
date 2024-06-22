@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
-from rest.views import send_email_to_class
+from rest.views import send_email_to_class, bulk_create_students
 from rest.viewsets import UserViewSet
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path('auth/', obtain_auth_token),
     path('auth/logout', UserViewSet.User_logout),
     path('email/<int:pk>', send_email_to_class),
+    path('bulk_create_students/', bulk_create_students, name='bulk_create_students'),
 ]
