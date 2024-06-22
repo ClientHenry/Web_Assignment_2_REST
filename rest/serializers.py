@@ -95,7 +95,6 @@ class ClassSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
-
 	class Meta:
 		model = Group
 		fields = ('name',)
@@ -113,11 +112,11 @@ class UserSerilizer(serializers.ModelSerializer):
 
 
 class StudentEnrollmentSerializer(serializers.ModelSerializer):
-
 	courseName = serializers.ReadOnlyField(source='classID.course.name')
 	classNumber = serializers.ReadOnlyField(source='classID.number')
 	studentFirstName = serializers.ReadOnlyField(source='studentID.firstname')
 	studentLastName = serializers.ReadOnlyField(source='studentID.lastname')
+
 	class Meta:
 		model = StudentEnrollment
 		fields = '__all__'

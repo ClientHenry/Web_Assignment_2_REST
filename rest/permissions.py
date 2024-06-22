@@ -22,8 +22,8 @@ class IsStudent(permissions.BasePermission):
 
 
 class IsAdmin(permissions.BasePermission):
-
 	message = 'You must be an admin to access this resource'
+
 	def has_permission(self, request, view):
 		user_groups = request.user.groups.values_list('name', flat=True)
 		if 'Admin' in user_groups:
