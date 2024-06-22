@@ -95,6 +95,8 @@ def bulk_create_students(request):
             # Create or retrieve User instance
             user, _ = User.objects.get_or_create(username=email)
             user.set_password(str(dob))
+            user.set_first_name(first_name)
+            user.set_last_name(last_name)
             user.save()
 
             # Ensure user belongs to 'Student' group
