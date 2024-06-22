@@ -73,6 +73,8 @@ def send_email_to_class(request, pk):
 #     serializer = StudentSerializer(created_students, many=True)
 #     return Response(serializer.data)
 
+from datetime import datetime
+
 @api_view(['POST'])
 def bulk_create_students(request):
     students_data = request.data.get('students', [])
@@ -81,7 +83,11 @@ def bulk_create_students(request):
     for student_data in students_data:
         try:
             email = student_data.get('email')
-            dob = student_data.get('DOB')
+            dob_str = student_data.get('DOB')  # Assuming it's in 'YYYY-MM-DD' format
+
+            # Convert 'DOB' string to datetime object
+            dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+
             first_name = student_data.get('firstName')
             last_name = student_data.get('lastName')
             studentID = student_data.get('studentID')
@@ -104,7 +110,7 @@ def bulk_create_students(request):
                 'firstname': first_name,
                 'lastname': last_name,
                 'email': email,
-                'DOB': "1980-01-01",
+                'DOB': dob,  # Assign datetime object here
                 'studentID': studentID
             }
 
