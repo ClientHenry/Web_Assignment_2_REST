@@ -1,10 +1,8 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.core.mail import send_mail
-
 from rest.models import Class
 from rest.permissions import IsLecturer
 from rest.serializers import StudentEnrollmentSerializer

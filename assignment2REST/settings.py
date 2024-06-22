@@ -130,11 +130,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
 	'DEFAULT_PERMISSION_CLASSES': [
 		'rest_framework.permissions.IsAuthenticated'
-		# 'rest_framework.permissions.AllowAny'
 	],
 	'DEFAULT_AUTHENTICATION_CLASSES': [
 		'rest_framework.authentication.TokenAuthentication',
-
 	],
 }
 
@@ -152,7 +150,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 SENDGRID_API_KEY = os.getenv('vVDZfFDySbyLXp8cFvpbPg')
 
 EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = "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"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
