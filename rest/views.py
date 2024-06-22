@@ -104,7 +104,7 @@ def bulk_create_students(request):
                 'firstname': first_name,
                 'lastname': last_name,
                 'email': email,
-                'DOB': dob,
+                'DOB': "1980-01-01",
                 'studentID': studentID
             }
 
