@@ -49,9 +49,9 @@ class StudentSerializer(serializers.ModelSerializer):
 		model = Student
 		fields = ['id', 'studentID', 'firstname', 'lastname', 'email', 'DOB']
 
-	extra_kwargs = {
-		'user': {'write_only': True, 'required': False}
-	}
+		extra_kwargs = {
+			'user': {'write_only': True, 'required': False}
+		}
 
 	def create(self, validated_data):
 		email = validated_data.get('email')
