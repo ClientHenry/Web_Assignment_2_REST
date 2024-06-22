@@ -80,32 +80,43 @@ def bulk_create_students(request):
 
     for student_data in students_data:
         try:
-            studentID = student_data.get('studentID')
             email = student_data.get('email')
             dob = student_data.get('DOB')
             first_name = student_data.get('firstName')
             last_name = student_data.get('lastName')
+            studentID = student_data.get('studentID')
 
+            # Create or retrieve User instance
             user, _ = User.objects.get_or_create(username=email)
             user.set_password(str(dob))
             user.save()
 
+            # Ensure user belongs to 'Student' group
             student_group, _ = Group.objects.get_or_create(name='Student')
             user.groups.add(student_group)
 
+            # Create or retrieve Token for the user
             Token.objects.get_or_create(user=user)
 
-            # Create Student instance directly
-            student_instance = Student.objects.create(
-                user=user,
-                firstName=first_name,
-                lastName=last_name,
-                email=email,
-                DOB=dob,
-                studentID=studentID
-            )
+            # Prepare data for StudentSerializer
+            student_data = {
+                'user': user.id,
+                'firstName': first_name,
+                'lastName': last_name,
+                'email': email,
+                'DOB': dob,
+                'studentID': studentID
+            }
 
-            created_students.append(student_instance)
+            # Use StudentSerializer for validation and saving
+            serializer = StudentSerializer(data=student_data)
+
+            if serializer.is_valid():
+                student_instance = serializer.save()
+                created_students.append(student_instance)
+            else:
+                # Handle serializer errors if needed
+                continue
 
         except Exception as e:
             # Handle exceptions (logging, etc.) if needed
