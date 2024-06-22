@@ -108,7 +108,7 @@ def bulk_create_students(request):
 
             # Prepare data for StudentSerializer
             student_data = {
-                'user': user.id,
+                'user': user,
                 'firstname': first_name,
                 'lastname': last_name,
                 'email': email,
