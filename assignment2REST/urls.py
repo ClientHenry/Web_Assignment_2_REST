@@ -26,5 +26,5 @@ urlpatterns = [
     path('api/', include('rest.urls')),
     path('auth/', obtain_auth_token),
     path('auth/logout', UserViewSet.User_logout),
-    path('email/', send_email_to_class),
+    path('email/<int:pk>', send_email_to_class),
 ]
