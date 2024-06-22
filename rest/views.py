@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.core.mail import send_mail
+from rest_framework.serializers.BaseSerializer import validated_data
+
 from rest.models import Class, Student
 from rest.permissions import IsLecturer, IsAdmin
 from rest.serializers import StudentEnrollmentSerializer, StudentSerializer
@@ -95,15 +97,13 @@ def bulk_create_students(request):
             # Create or retrieve User instance
             user, _ = User.objects.get_or_create(username=email)
             user.set_password(str(dob))
-            user.set_first_name(first_name)
-            user.set_last_name(last_name)
             user.save()
 
             # Ensure user belongs to 'Student' group
             student_group, _ = Group.objects.get_or_create(name='Student')
             user.groups.add(student_group)
 
-            # Create or retrieve Token for the user
+            # Create Token for the user
             Token.objects.get_or_create(user=user)
 
             # Prepare data for StudentSerializer
@@ -112,7 +112,7 @@ def bulk_create_students(request):
                 'firstname': first_name,
                 'lastname': last_name,
                 'email': email,
-                'DOB': dob,  # Assign datetime object here
+                'DOB': dob,
                 'studentID': studentID
             }
 
