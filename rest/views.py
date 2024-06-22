@@ -38,11 +38,12 @@ def send_email_to_class(request, pk):
 		subject = 'Your Grade is Ready'
 		body = 'Your Grade is Ready'
 		from_email = 'wanghao0628@hotmail.com'
-		# to_email = enrollment.studentID.email
-		to_email = 'wangh159@myunitec.ac.nz'
+		to_email = enrollment.studentID.email
+		# to_email = 'wangh159@myunitec.ac.nz'
 		send_mail(subject, body, from_email, [to_email])
+		print(f"Sent email to: {to_email}")
 
 	# Optionally, you can serialize the enrollments for response
 	serializer = StudentEnrollmentSerializer(enrollments, many=True)
 
-	return Response({'success': 'Email sent successfully', 'enrollments': serializer.data}, status=200)
+	return Response({'success': 'Email sent successfully'}, status=200)
